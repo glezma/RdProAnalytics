@@ -104,7 +104,7 @@ set.seed(123)
 ridge <- train(
   medv ~., data = train.data, method = "glmnet",
   trControl = trainControl("cv", number = 10),
-  tuneGrid = expand.grid(alpha = 0:1, lambda = lambda)
+  tuneGrid = expand.grid(alpha = 0, lambda = lambda)
 )
 
 plot(ridge)
