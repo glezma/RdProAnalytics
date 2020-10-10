@@ -76,7 +76,7 @@ library(Rtsne)
 X<-normalize_input(Xraw)
 tsne_out<-Rtsne(X, dims = 2)
 
-library(ggplot2)
-tsne_plot <- data.frame(x = tsne_out$Y[,1], y = tsne_out$Y[,2], col = iris_unique$Species)
-ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=col))
+# library(ggplot2)
+# tsne_plot <- data.frame(x = tsne_out$Y[,1], y = tsne_out$Y[,2], col = iris_unique$Species)
+# ggplot(tsne_plot) + geom_point(aes(x=x, y=y, color=col))
 

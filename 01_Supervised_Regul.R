@@ -75,6 +75,8 @@ model <- train(
   trControl = trainControl("cv", number = 10),
   tuneLength = 10
 )
+
+
 # Best tuning parameter
 model$bestTune
 
@@ -94,7 +96,7 @@ data.frame(
 # Comparison
 
 # Comparing all model.response(
-lambda <- 10^seq(2, 3, length = 10)
+lambda <- 10^seq(-2, -1, length = 10)
 
 
 # Build the model
@@ -102,9 +104,10 @@ set.seed(123)
 ridge <- train(
   medv ~., data = train.data, method = "glmnet",
   trControl = trainControl("cv", number = 10),
-  tuneGrid = expand.grid(alpha = 0, lambda = lambda)
+  tuneGrid = expand.grid(alpha = 0:1, lambda = lambda)
 )
 
+plot(ridge)
 # LASSO
 
 # Build the model
@@ -114,7 +117,9 @@ lasso <- train(
   trControl = trainControl("cv", number = 10),
   tuneGrid = expand.grid(alpha = 1, lambda = lambda)
 )
+plot(lasso$finalModel)
 
+plot(ridge$finalModel)
 # Build the model
 set.seed(123)
 elastic <- train(
@@ -123,7 +128,40 @@ elastic <- train(
   tuneLength = 10
 )
 
-models <- list(ridge = ridge, lasso = lasso, elastic = elastic)
-resamples(models) %>% summary( metric = "RMSE")
+plot(elastic)
+# Build the model
+set.seed(123)
+lm <- train(
+  medv ~., data = train.data, method = "lm",
+  trControl = trainControl("cv", number = 10),
+  tuneLength = 10
+)
+
+#  Classsification tree
+set.seed(123)
+cart <- train(
+  medv ~., data = train.data, method = "rpart",
+  trControl = trainControl("cv", number = 10),
+  tuneLength = 10
+)
+
+# Random Forest
+set.seed(123)
+rf <- train(
+  medv ~., data = train.data, method = "ranger",
+  trControl = trainControl("cv", number = 10),
+  tuneLength = 10
+)
 
 
+models <- list(lm = lm,rf=rf,ridge = ridge, lasso = lasso, elastic = elastic, cart = cart)
+rsmples <- resamples(models) 
+summary(rsmples, metric = "RMSE")
+
+
+bwplot(rsmples)
+dotplot(rsmples)
+# densityplot(rsmples)
+par(xpd = NA) # Avoid clipping the text in some device 
+plot(cart$finalModel)
+text(cart$finalModel , digits = 3)  

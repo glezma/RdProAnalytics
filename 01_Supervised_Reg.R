@@ -1,112 +1,33 @@
-# 1) Fitting a linear model to in the mtcars data
-# Fitting a linear model to the mtcars data
-data(mtcars)
+data(Sonar)
 
-model <-lm(mpg ~ hp, mtcars[1:20,])
+# Shuffle row indices: permuted_rows
+permuted_rows <- sample(nrow(Sonar))
 
-# Predict in-sample (Getting RMSE for the training sample)
-predicted <- predict(
-  model, mtcars[1:20,],type='response'
-)
+# Randomly order data: Sonar
+Sonar_shuffled <- Sonar[permuted_rows,]
 
-# Computing rmse
-actual <- mtcars[1:20,'mpg']
-sqrt(mean((predicted-actual)^2))
-
-
-# 2) Fitting a linear model to in the diamonds data
-# Fit lm model: model
-model <- lm(price ~ . ,diamonds)
-
-# Predict on full data: p
-predicted <- predict(model,
-                     diamonds, type='response')
-
-# Compute errors: error
-actual <- diamonds$price
-errors = predicted-actual
-
-# Calculate RMSE
-sqrt(mean(errors^2))
-
-
-
-data(mtcars)
-model <- lm(mpg ~hp, mtcars[1:20,])
-
-# Prediction out of sample 
-predicted <- predict(
-  model, mtcars[21:32,],type = "response"
-)
-
-# compite mse error
-actual <- mtcars[21:32, "mpg"]
-sqrt(mean((predicted - actual) ^ 2))
-
-# ORDER A DF RANDOMLY
-# Set seed
-set.seed(42)
-
-
-# Shuffle row indices: rows
-
-rows <- sample(nrow(diamonds))
-
-# Randomly order data
-shuffled_diamonds <- diamonds[rows,]
-
-
-# DO AN 80/20 SPLIT
-
-# Determine row to split on: split
-split <- round(nrow(diamonds) * 0.80)
+# Identify row to split on: split
+split <- round(n_obs * 0.6)
 
 # Create train
-train <- diamonds[1:split, ]
+train <- Sonar_shuffled[1:split,]
 
 # Create test
-test <-diamonds[(split + 1):nrow(diamonds), ]
+test <- Sonar_shuffled[(split+1):n_obs,]
 
-
-# PREDICT ON A TEST SET
-
-# Fit lm model on train: model
-model <- lm(price~.,train)
+# Fit glm model: model
+model <-glm(Class ~.,family = "binomial", train)
 
 # Predict on test: p
-p <- predict(model, test)
+p<-predict(model, test, type = "response")
 
-# Compute errors: error
-error <- p-test$price
 
-# Calculate RMSE
-sqrt(mean(error^2))
+# CONFUSUION MATRIX
+# If p exceeds threshold of 0.5, M else R: m_or_r 
+m_or_r <- ifelse(p>0.5,"M","R")
+# Convert to factor: p_class
+p_class <- factor(m_or_r,levels = levels(test[['Class']]))
+# Create confusion matrix
+confusionMatrix(p_class,test[["Class"]])
 
-library(caret)
-# CROSS VALIDATION
-set.seed(42)
-
-# Fit linear  re gresssion model
-model <- train(
-  mpg ~ hp, mtcars, 
-  method = 'lm',
-  trControl = trainControl(
-    method = 'cv',
-    number = 10,
-    verboseIter = TRUE
-  )
-)
-
-model <- train(
-  mpg ~ hp, 
-  mtcars,
-  method = "lm",
-  trControl = trainControl(
-    method = "repeatedcv", 
-    number = 5,
-    repeats = 5, 
-    verboseIter = TRUE
-  )
-)
-summary(model)
 
