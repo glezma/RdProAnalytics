@@ -12,9 +12,9 @@ data %>%
 # 1.1) COMPUTE POWER SAMPLE SIZE FOR LOGISTIC REGRESION
 install.packages("powerMediation")
 library(powerMediation)
-total_sample_size <- SSizeLogisticBin(p1 = 0.2,
-                                      p2 = 0.3,
-                                      B = 0.5,
+total_sample_size <- SSizeLogisticBin(p1 = 0.2, # conversion inicial
+                                      p2 = 0.3, # conversion final = p1 + delta (1M /0.1%)
+                                      B = 0.5, # muestra en cada experiencia
                                       alpha = 0.05,
                                       power = 0.8)
 

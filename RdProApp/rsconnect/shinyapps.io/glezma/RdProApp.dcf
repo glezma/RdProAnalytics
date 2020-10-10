@@ -1,0 +1,12 @@
+name: RdProApp
+title: RdProApp
+username:
+account: glezma
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2986709
+bundleId: 3724751
+url: https://glezma.shinyapps.io/RdProApp/
+when: 1602363273.27914
+asMultiple: FALSE
+asStatic: FALSE
