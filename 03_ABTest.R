@@ -1,28 +1,12 @@
 # install.packages("tidyverse")
 library(tidyverse)
 library(lubridate)
-data = read_csv("abtest.csv")
+data = read.csv("abtest.csv")
 data
 
 data %>%
   summarize(conv_rate = mean(conversion))
 
-data %>%
-  group_by(month(date)) %>%
-  summarize(conversion_rate= mean(conversion))
-
-
-# Compute conversion rate by week of the year
-data_sum <- data %>%
-  group_by(week(date)) %>%
-  summarize(conversion_rate = mean(conversion))
-
-# Build plot
-ggplot(data_sum, aes(x = `week(date)`,
-                           y = conversion_rate)) +
-  geom_point() +
-  geom_line() +
-  scale_y_continuous(limits = c(0, 1))
 
 # 1) LOGISTIC REGGRESION
 # 1.1) COMPUTE POWER SAMPLE SIZE FOR LOGISTIC REGRESION
@@ -37,29 +21,10 @@ total_sample_size <- SSizeLogisticBin(p1 = 0.2,
 total_sample_size
 total_sample_size/2
 
-# EXPLORE
-
-# Group and summarize data
-data_sum <- data %>%
-  group_by(experiment, month(date)) %>%
-  summarize(conversion_rate = mean(conversion))
-data_sum
-# Make plot of conversion rates over time
-ggplot(data_sum,
-       aes(x = `month(date)`,
-           y = conversion_rate,
-           color = experiment,
-           group = experiment)) +
-  geom_point() +
-  geom_line()
 
 # 1.2) PERFORMING TEST
 # Load package for cleaning model results
 library(broom)
-# View summary of results
-data %>%
-  group_by(experiment) %>%
-  summarize(conversion_rate = mean(conversion))
 
 # Run logistic regression
 experiment_results <- glm(conversion ~ experiment,
@@ -101,14 +66,3 @@ stopping_points
 
 #install.packages("bayesAB")
 
-
-library(bayesAB)
-
-A_binom <- rbinom(250, 1, .25)
-B_binom <- rbinom(300, 1, .2)
-
-plotBeta(65, 200)
-
-AB1 <- bayesTest(A_binom, B_binom, priors = c('alpha' = 65, 'beta' = 200), n_samples = 1e5, distribution = 'bernoulli')
-plot(AB1)
-binomialBandit <-banditize(AB1)
