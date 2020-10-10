@@ -1,7 +1,9 @@
 # 1) Fitting a linear model to in the mtcars data
 # Fitting a linear model to the mtcars data
 data(mtcars)
+
 model <-lm(mpg ~ hp, mtcars[1:20,])
+
 # Predict in-sample (Getting RMSE for the training sample)
 predicted <- predict(
   model, mtcars[1:20,],type='response'
@@ -10,6 +12,7 @@ predicted <- predict(
 # Computing rmse
 actual <- mtcars[1:20,'mpg']
 sqrt(mean((predicted-actual)^2))
+
 
 # 2) Fitting a linear model to in the diamonds data
 # Fit lm model: model
@@ -25,6 +28,8 @@ errors = predicted-actual
 
 # Calculate RMSE
 sqrt(mean(errors^2))
+
+
 
 data(mtcars)
 model <- lm(mpg ~hp, mtcars[1:20,])

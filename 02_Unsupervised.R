@@ -1,5 +1,6 @@
 # k-means 
 library(tidyverse)
+setwd("~/Programming/Analytics")
 x<-read_csv("data_clustering.csv")
 kmeans(x, centers = 3, nstart = 20)
 
@@ -38,6 +39,18 @@ for(i in 1:6) {
        main = km.out$tot.withinss, 
        xlab = "", ylab = "")
 }
+
+km.out <- kmeans(x, centers=3,nstart=200)
+
+# Plot clusters
+plot(x, col = km.out$cluster, 
+     main = km.out$tot.withinss, 
+     xlab = "", ylab = "")
+
+
+# GGplot2
+ggplot(data = x, aes(x=x1,y=x2,color=factor(km.out$cluster)))+geom_point()+stat_ellipse()
+
 
 # The elbow
  
